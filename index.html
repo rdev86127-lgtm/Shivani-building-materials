@@ -1,0 +1,152 @@
+shivangi-building-material/
+│
+├── app/
+│   ├── layout.js
+│   ├── page.js
+│   │
+│   ├── about/page.js
+│   ├── contact/page.js
+│   │
+│   ├── products/
+│   │     ├── page.js
+│   │     └── [category]/
+│   │           └── page.js
+│   │
+│   ├── product/
+│   │     └── [id]/
+│   │           └── page.js
+│   │
+│   ├── cart/
+│   │     └── page.js
+│   │
+│   ├── admin/
+│   │     ├── login/page.js
+│   │     ├── dashboard/page.js
+│   │     ├── products/page.js
+│   │     ├── categories/page.js
+│   │     ├── testimonials/page.js
+│   │     └── settings/page.js
+│
+├── components/
+│   ├── Navbar.jsx
+│   ├── Footer.jsx
+│   ├── HeroSection.jsx
+│   ├── AboutSection.jsx
+│   ├── CategoryCard.jsx
+│   ├── ProductCard.jsx
+│   ├── ProductDetail.jsx
+│   ├── CartItem.jsx
+│   ├── CartSummary.jsx
+│   ├── AdminSidebar.jsx
+│   ├── AdminHeader.jsx
+│   ├── ProductForm.jsx
+│   ├── CategoryForm.jsx
+│   ├── SettingsForm.jsx
+│   ├── TestimonialForm.jsx
+│   ├── ProtectedRoute.jsx
+│   ├── FloatingButtons.jsx
+│   └── SEOHead.jsx
+│
+├── context/
+│   └── CartContext.jsx
+│
+├── lib/
+│   ├── supabase.js
+│   ├── whatsapp.js
+│   ├── cart.js
+│   ├── auth.js
+│   └── helpers.js
+│
+├── styles/
+│   └── globals.css
+│
+├── public/
+│   ├── logo.png
+│   ├── hero-banner.jpg
+│   └── category-banners/
+│
+├── .env.local
+└── package.json
+
+import { supabase } from "./supabase"
+
+export async function loginAdmin(email, password) {
+  return await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+}
+
+export async function logoutAdmin() {
+  return await supabase.auth.signOut()
+}
+
+supabase.auth.getUser()
+
+{
+  id,
+  category,
+  name,
+  variant,
+  price,
+  unit,
+  quantity,
+  total
+}
+
+const addToCart = (product) => {
+  setCart(prev => {
+    const existing = prev.find(p => p.id === product.id)
+
+    if (existing) {
+      return prev.map(p =>
+        p.id === product.id
+          ? { ...p, quantity: p.quantity + product.quantity }
+          : p
+      )
+    }
+
+    return [...prev, product]
+  })
+}
+
+export function generateWhatsAppMessage(cart, whatsappNumber) {
+
+  let message = "Hello Shivangi Building Material,%0A%0A"
+  message += "I would like to order:%0A%0A"
+
+  let totalAmount = 0
+
+  cart.forEach(item => {
+    const itemTotal = item.price * item.quantity
+    totalAmount += itemTotal
+
+    message += `Category: ${item.category}%0A`
+    message += `Product: ${item.name}%0A`
+    message += `Variant: ${item.variant || "N/A"}%0A`
+    message += `Quantity: ${item.quantity}%0A`
+    message += `Unit Price: ₹${item.price}%0A`
+    message += `Total: ₹${itemTotal}%0A%0A`
+  })
+
+  message += `Grand Total: ₹${totalAmount}%0A%0A`
+  message += "Please confirm availability and delivery details."
+
+  return `https://wa.me/${whatsappNumber}?text=${message}`
+}
+
+/products/cement
+/products/aggregate
+/products/sand
+/products/steel
+/products/paint
+/products/hardware
+
+export const metadata = {
+  title: "Shivangi Building Material - Building Materials Azamgarh",
+  description: "Trusted cement dealer, TMT bar supplier, sand and aggregate supplier in Azamgarh.",
+  keywords: "building materials Azamgarh, cement dealer Azamgarh, TMT bar supplier Azamgarh"
+}
+
+NEXT_PUBLIC_SUPABASE_URL=your_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
